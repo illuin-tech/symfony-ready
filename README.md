@@ -1,7 +1,7 @@
 Symfony-ready
 =============
 
-Docker image based on alpine with php 7.3, node v10, composer & following PHP exts:
+Docker image based on alpine 3.11 with php 7.3, node v12, composer & following PHP exts:
 - intl
 - json
 - mbstring
@@ -10,4 +10,5 @@ Docker image based on alpine with php 7.3, node v10, composer & following PHP ex
 - zip
 - bcmath
 - sockets
-
+- ldap
+- gd
