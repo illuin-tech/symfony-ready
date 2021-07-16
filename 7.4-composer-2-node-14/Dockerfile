@@ -1,4 +1,4 @@
-FROM php:7.4-alpine
+FROM php:7.4-alpine3.13
 
 RUN apk update && apk add icu-dev postgresql-dev libzip-dev openldap-dev libpng-dev oniguruma-dev
 RUN docker-php-ext-install intl json mbstring pdo pdo_pgsql zip bcmath sockets ldap gd
