@@ -11,5 +11,6 @@ RUN set -xe \
  && cd .. && rm -Rf imagick \
  && docker-php-ext-enable imagick \
  && apk add --no-cache --virtual .imagick-runtime-deps imagemagick
+RUN pecl install redis && docker-php-ext-enable redis
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN apk add nodejs~=14 npm
