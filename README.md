@@ -1,7 +1,7 @@
 Symfony-ready
 =============
 
-Docker images based on alpine 3 with php 7/8, node v12/14/16/18, composer 1/2 & following PHP exts:
+Docker images based on alpine 3 with php 7/8, node v12/14/16/18/20/22, composer 1/2 & following PHP exts:
 - intl
 - json
 - mbstring
@@ -25,3 +25,4 @@ Docker images based on alpine 3 with php 7/8, node v12/14/16/18, composer 1/2 & 
 | 8.1                    | 8.1 | 2        | 16   |
 | 8.2                    | 8.2 | 2        | 18   |
 | 8.2-node-20            | 8.2 | 2        | 20   |
+| 8.2-node-22            | 8.2 | 2        | 22   |
