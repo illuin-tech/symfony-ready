@@ -5,14 +5,15 @@ RUN apt-get update -q -y \
     && curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash - \
     && apt-get install -q -y postgresql-client libcurl4-gnutls-dev zlib1g-dev libicu-dev g++ libxml2-dev libpq-dev \
       libonig-dev libzip-dev libldb-dev libldap2-dev libfreetype-dev libjpeg62-turbo-dev libpng-dev libxrender-dev \
-      librabbitmq-dev software-properties-common git git-lfs unzip procps locales build-essential \
+      librabbitmq-dev software-properties-common git git-lfs unzip procps locales build-essential xmlstarlet bc wget \
       libmagickwand-dev libmagickcore-dev imagemagick ghostscript fcgiwrap symfony-cli \
     && apt-get autoremove && apt-get autoclean \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-source extract \
     && pecl install redis \
     && pecl install amqp \
-    && docker-php-ext-enable redis amqp \
+    && pecl install xdebug \
+    && docker-php-ext-enable redis amqp xdebug \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install intl mbstring pdo pdo_pgsql pdo_mysql zip bcmath sockets ldap opcache pcntl soap \
@@ -30,6 +31,8 @@ RUN pecl download imagick \
     && cd .. \
     && rm -rf imagick-* \
     && docker-php-ext-enable imagick
+
+RUN mkdir /tools && cd /tools && wget https://phar.phpunit.de/phpcov.phar && cd - && php /tools/phpcov.phar --version
 
 ENV XDEBUG_MODE=off
 
