@@ -30,7 +30,8 @@ RUN pecl download imagick \
     && make install \
     && cd .. \
     && rm -rf imagick-* \
-    && docker-php-ext-enable imagick
+    && docker-php-ext-enable imagick \
+    && sed -i 's#</policymap>#  <policy domain="coder" rights="read|write" pattern="{PS,PDF,XPS}" />\n</policymap>#' /etc/ImageMagick-6/policy.xml
 
 RUN mkdir /tools && cd /tools && wget https://phar.phpunit.de/phpcov.phar && cd - && php /tools/phpcov.phar --version
 
