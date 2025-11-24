@@ -27,3 +27,4 @@ Docker images based on alpine 3 with php 7/8, node v12/14/16/18/20/22, composer 
 | 8.2-node-20            | 8.2 | 2        | 20   | alpine-3.18     |
 | 8.2-node-22            | 8.2 | 2        | 22   | alpine-3.20     |
 | 8.4-node-22            | 8.4 | 2        | 22   | debian-bookworm |
+| 8.4-node-24            | 8.4 | 2        | 24   | debian-trixie   |
