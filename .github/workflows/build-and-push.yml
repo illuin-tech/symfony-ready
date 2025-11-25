@@ -1,0 +1,88 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**/Dockerfile'
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfiles: ${{ steps.changed-files.outputs.all_changed_files }}
+      has-changes: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed Dockerfiles
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: '**/Dockerfile'
+          json: true
+          escape_json: false
+
+  build-and-push:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile: ${{ fromJSON(needs.detect-changes.outputs.dockerfiles) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version tag from path
+        id: extract-tag
+        run: |
+          DOCKERFILE_PATH="${{ matrix.dockerfile }}"
+          # Extract directory name (e.g., "7.3" from "7.3/Dockerfile")
+          VERSION_DIR=$(dirname "$DOCKERFILE_PATH")
+          
+          # Map directory names to Docker tags based on README.md
+          case "$VERSION_DIR" in
+            "7.3")
+              TAG="php7.3"
+              ;;
+            "7.4")
+              TAG="php7.4"
+              ;;
+            *)
+              TAG=$VERSION_DIR
+              ;;
+          esac
+          
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "context=$VERSION_DIR" >> $GITHUB_OUTPUT
+          echo "Building image with tag: $TAG from context: $VERSION_DIR"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ steps.extract-tag.outputs.context }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: illuin/symfony-ready:${{ steps.extract-tag.outputs.tag }}
+          cache-from: type=registry,ref=illuin/symfony-ready:${{ steps.extract-tag.outputs.tag }}
+          cache-to: type=inline
+
+      - name: Image digest
+        run: echo "Image pushed successfully with tag illuin/symfony-ready:${{ steps.extract-tag.outputs.tag }}"
