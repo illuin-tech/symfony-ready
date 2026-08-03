@@ -18,6 +18,7 @@ on:
           - '8.2-node-22'
           - '8.4-node-22'
           - '8.4-node-24'
+          - '8.5-node-26'
 
 jobs:
   build-and-push:
